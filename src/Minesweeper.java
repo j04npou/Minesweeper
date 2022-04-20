@@ -9,6 +9,7 @@ public class Minesweeper {
     private final String flag = "\uD83D\uDEA9";
     private final String cover = "\uD83D\uDFE9";
     private int totalMines = 10;
+    private boolean firstMove = true;
 
     public void setField(int x, int y, int mines) {
         field = new int[x][y];
@@ -31,11 +32,11 @@ public class Minesweeper {
                         System.out.print(flag + " ");
                         break;
                     case 0:
-                        // Celda tapada
+                        // Cel·la tapada
                         System.out.print(cover + " ");
                         break;
                     case 1:
-                        // Celda destapada
+                        // Cel·la destapada
                         switch (field[x][y]) {
                             case -1:
                                 System.out.print(mine + " ");
@@ -55,9 +56,10 @@ public class Minesweeper {
         }
     }
 
-    public void putMines() {
+    private void putMines() {
         int xMax = field.length;
         int yMax =  field[0].length;
+        setField(xMax, yMax, totalMines);
 
         Random random = new Random();
 
@@ -104,7 +106,6 @@ public class Minesweeper {
                                 System.out.println("⛔ You cannot put a flag here ⛔");
                             }
                         }
-                        System.out.println(move);
                     }
                 }
 
@@ -112,8 +113,30 @@ public class Minesweeper {
             case '0':
                 return false;
             default:
+                if (move.length() >= 2) {
+                    int x = move.charAt(0)-'A'+1;
+                    if (x >= 1 && x <= field.length) {
+                        int y = Integer.parseInt(move.substring(1));
+                        if (y >= 1 && y <= field[0].length) {
+                            // Cridam putMine si es el primer pic que destapam una cel·la
+                            if (firstMove) {
+                                while (field[x-1][y-1] != 0 || firstMove) {
+                                    firstMove = false;
+                                    putMines();
+                                }
+                            }
+                            uncover(x-1,y-1);
+                        }
+                    }
+                }
+
+                break;
 
         }
         return true;
+    }
+
+    private void uncover(int x, int y) {
+        visibility[x][y] = 1;
     }
 }
