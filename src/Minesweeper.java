@@ -1,13 +1,19 @@
 import java.util.Random;
 
 public class Minesweeper {
-    public int[][] field = new int[10][8];
-    public int[][] visibility = new int[10][8];
+    private int[][] field = new int[8][10];
+    private int[][] visibility = new int[field.length][field[0].length];
     private final String boxNumber= "\u20E3";
     private final String mine = "\uD83D\uDCA3";
     private final String flag = "\uD83D\uDEA9";
     private final String cover = "\uD83D\uDFE9";
-    private int totalMines = 8;
+    private int totalMines = 10;
+
+    public void setField(int x, int y, int mines) {
+        field = new int[x][y];
+        visibility = new int[x][y];
+        totalMines = mines;
+    }
 
     public void printField() {
         System.out.print("    ");
