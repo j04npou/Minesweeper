@@ -33,8 +33,9 @@ public class Game {
     private static void newGame(int x, int y, int mines) {
         Minesweeper Field = new Minesweeper();
         boolean game = true;
+        Field.setField(x, y, mines);
+
         while (game) {
-            Field.setField(x, y, mines);
             Field.printField();
             game = Field.enterMove();
         }

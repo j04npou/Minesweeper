@@ -86,15 +86,34 @@ public class Minesweeper {
         System.out.println("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
         // (char)('A'+field.length)
         String move = keys.next();
+        move = move.toUpperCase();
 
-        if (move.length()>0)
-            switch (move.charAt(0)) {
-                case '.':
+        switch (move.charAt(0)) {
+            case '.':
+                if (move.length() >= 3) {
+                    int x = move.charAt(1)-'A'+1;
+                    if (x >= 1 && x <= field.length) {
+                        int y = Integer.parseInt(move.substring(2));
+                        if (y >= 1 && y <= field[0].length) {
+                            // Col·locam o llevam bandera
+                            if (visibility[x-1][y-1] == 0) {
+                                visibility[x - 1][y - 1] = 2;
+                            } else if (visibility[x-1][y-1] == 2) {
+                                visibility[x - 1][y - 1] = 0;
+                            } else {
+                                System.out.println("⛔ You cannot put a flag here ⛔");
+                            }
+                        }
+                        System.out.println(move);
+                    }
+                }
 
-                    break;
-                case '0':
-                    return false;
-            }
-        return true;
+                break;
+            case '0':
+                return false;
+            default:
+
         }
+        return true;
+    }
 }
