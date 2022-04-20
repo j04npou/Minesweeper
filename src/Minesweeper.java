@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.Scanner;
 
 public class Minesweeper {
     private int[][] field = new int[8][10];
@@ -77,6 +78,23 @@ public class Minesweeper {
                 }
             }
         }
-
     }
+
+    public boolean enterMove() {
+        Scanner keys = new Scanner(System.in);
+
+        System.out.println("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
+        // (char)('A'+field.length)
+        String move = keys.next();
+
+        if (move.length()>0)
+            switch (move.charAt(0)) {
+                case '.':
+
+                    break;
+                case '0':
+                    return false;
+            }
+        return true;
+        }
 }
