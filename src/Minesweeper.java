@@ -19,6 +19,10 @@ public class Minesweeper {
             System.out.printf("[%02d] ", y+1);
             for (int x = 0; x < field.length; x++) {
                 switch (visibility[x][y]) {
+                    case 2:
+                        // Bandera
+                        System.out.print(flag + " ");
+                        break;
                     case 0:
                         // Celda tapada
                         System.out.print(cover + " ");
@@ -37,9 +41,6 @@ public class Minesweeper {
                                 break;
                         }
                         break;
-                    case 2:
-                        // Bandera
-                        System.out.print(flag + " ");
                 }
 
             }
@@ -57,9 +58,17 @@ public class Minesweeper {
         while (counter < totalMines) {
             int x = random.nextInt(xMax);
             int y = random.nextInt(yMax);
-            if (field[x][y] == 0) {
+            if (field[x][y] != -1) {
                 field[x][y] = -1;
                 counter++;
+                // Col·loca els numeros
+                for (int x1 = x-1; x1 <= x+1; x1++) {
+                    for (int y1 = y-1; y1 <= y+1; y1++) {
+                        if (x1 >= 0 && x1 < field.length && y1 >= 0 && y1 < field[0].length && field[x1][y1] != -1) {
+                            field[x1][y1] ++;
+                        }
+                    }
+                }
             }
         }
 
