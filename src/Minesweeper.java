@@ -206,7 +206,7 @@ public class Minesweeper {
         return true;
     }
 
-    public void gameOver() {
+    private void gameOver() {
         System.out.print("    ");
         for (int i = 0; i < field.length; i++) {
             System.out.print("[" + (char)('A'+i) + "]");
