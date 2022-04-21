@@ -2,15 +2,16 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Minesweeper {
-    private int[][] field = new int[8][10];
-    private int[][] visibility = new int[field.length][field[0].length];
+    private int[][] field = new int[0][];
+    private int[][] visibility = new int[0][];
     private final String boxNumber= "\u20E3";
     private final String mine = "\uD83D\uDCA3";
     private final String flag = "\uD83D\uDEA9";
     private final String cover = "\uD83D\uDFE9";
     private final String fail = "\uD83C\uDFF4";
     private final String skull = "\uD83D\uDC80";
-    private int totalMines = 10;
+    private int totalMines;
+    private int winnerCounter = 0;
     private boolean firstMove = true;
 
     public void setField(int x, int y, int mines) {
@@ -20,6 +21,8 @@ public class Minesweeper {
     }
 
     public void printField() {
+        winnerCounter = 0;
+
         System.out.print("    ");
         for (int i = 0; i < field.length; i++) {
             System.out.print("[" + (char)('A'+i) + "]");
@@ -32,10 +35,12 @@ public class Minesweeper {
                     case 2:
                         // Bandera
                         System.out.print(flag + " ");
+                        winnerCounter++;
                         break;
                     case 0:
                         // Cel·la tapada
                         System.out.print(cover + " ");
+                        winnerCounter++;
                         break;
                     case 1:
                         // Cel·la destapada
@@ -86,6 +91,11 @@ public class Minesweeper {
     }
 
     public boolean enterMove() {
+        if (winnerCounter == totalMines) {
+            youWin();
+            return false;
+        }
+
         Scanner keys = new Scanner(System.in);
 
         System.out.println("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
@@ -129,7 +139,7 @@ public class Minesweeper {
                             }
                             if (uncover(x-1,y-1) == false) {
                                 // Hem destapat una bomba i hem perdut
-                                gameOver(x-1,y-1);
+                                gameOver();
                                 return false;
                             }
                         }
@@ -158,7 +168,7 @@ public class Minesweeper {
         return true;
     }
 
-    public void gameOver(int xMine, int yMine) {
+    public void gameOver() {
         System.out.print("    ");
         for (int i = 0; i < field.length; i++) {
             System.out.print("[" + (char)('A'+i) + "]");
@@ -203,5 +213,13 @@ public class Minesweeper {
                     "|   __|___ _____ ___   |     |_ _ ___ ___ \n" +
                     "|  |  | .'|     | -_|  |  |  | | | -_|  _|\n" +
                     "|_____|__,|_|_|_|___|  |_____|\\_/|___|_|  ");
+    }
+
+    private void youWin() {
+        System.out.println("" +
+                " __ __            _ _ _ _     \n" +
+                "|  |  |___ _ _   | | | |_|___ \n" +
+                "|_   _| . | | |  | | | | |   |\n" +
+                "  |_| |___|___|  |_____|_|_|_|");
     }
 }
