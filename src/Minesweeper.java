@@ -8,6 +8,8 @@ public class Minesweeper {
     private final String mine = "\uD83D\uDCA3";
     private final String flag = "\uD83D\uDEA9";
     private final String cover = "\uD83D\uDFE9";
+    private final String fail = "\uD83C\uDFF4";
+    private final String skull = "\uD83D\uDC80";
     private int totalMines = 10;
     private boolean firstMove = true;
 
@@ -109,7 +111,6 @@ public class Minesweeper {
                         }
                     }
                 }
-
                 break;
             case '0':
                 return false;
@@ -126,20 +127,22 @@ public class Minesweeper {
                                     putMines();
                                 }
                             }
-                            uncover(x-1,y-1);
+                            if (uncover(x-1,y-1) == false) {
+                                // Hem destapat una bomba i hem perdut
+                                gameOver(x-1,y-1);
+                                return false;
+                            }
                         }
                     }
                 }
-
                 break;
-
         }
         return true;
     }
 
     private boolean uncover(int x, int y) {
         if (x < 0 || x >= field.length || y < 0 || y >= field[0].length || visibility[x][y] == 1)
-            return false;
+            return true;
 
         visibility[x][y] = 1;
 
@@ -149,7 +152,56 @@ public class Minesweeper {
                     uncover(x1,y1);
                 }
             }
+        } else if (field[x][y] == -1) {
+            return false;
         }
         return true;
+    }
+
+    public void gameOver(int xMine, int yMine) {
+        System.out.print("    ");
+        for (int i = 0; i < field.length; i++) {
+            System.out.print("[" + (char)('A'+i) + "]");
+        }
+        System.out.println();
+        for (int y = 0; y < field[0].length; y++) {
+            System.out.printf("[%02d] ", y+1);
+            for (int x = 0; x < field.length; x++) {
+                if (visibility[x][y] == 2 && field[x][y] == -1) {
+                    // Bandera correcte
+                    System.out.print(flag + " ");
+                } else if (visibility[x][y] == 2 && field[x][y] != -1) {
+                    // Bandera incorrecte
+                    System.out.print(fail + " ");
+                } else if (visibility[x][y] == 0 && field[x][y] == -1) {
+                    // Cel·la tapada i mina
+                    System.out.print(mine + " ");
+                } else if (visibility[x][y] == 0) {
+                    // Cel·la sense destapar
+                    System.out.print(cover + " ");
+                } else if (visibility[x][y] == 1) {
+                    // Cel·la destapada
+                    switch (field[x][y]) {
+                        case -1:
+                            System.out.print(skull + " ");
+                            break;
+                        case 0:
+                            System.out.print("   ");
+                            break;
+                        default:
+                            System.out.print(field[x][y] + boxNumber + "  ");
+                            break;
+                    }
+                }
+
+            }
+            System.out.println("|");
+        }
+        System.out.println("-".repeat(field.length*3+6));
+        System.out.println("" +
+                    " _____                  _____             \n" +
+                    "|   __|___ _____ ___   |     |_ _ ___ ___ \n" +
+                    "|  |  | .'|     | -_|  |  |  | | | -_|  _|\n" +
+                    "|_____|__,|_|_|_|___|  |_____|\\_/|___|_|  ");
     }
 }
