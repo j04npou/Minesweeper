@@ -31,14 +31,19 @@ public class Game {
     }
 
     private static void newGame(int x, int y, int mines) {
-        Minesweeper Game = new Minesweeper();
-        Game.setField(x,y,mines);
-        Game.printField();
+        Minesweeper Field = new Minesweeper();
+        boolean game = true;
+        Field.setField(x, y, mines);
+
+        while (game) {
+            Field.printField();
+            game = Field.enterMove();
+        }
     }
 
     public static void main(String[] args) {
         while (menu()) {
-            System.out.println(1);
+            System.out.println();
         }
     }
 }
