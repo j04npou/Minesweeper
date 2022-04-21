@@ -102,6 +102,14 @@ public class Minesweeper {
         timeElapsed = System.currentTimeMillis();
     }
 
+    private static Integer tryParse(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     public boolean enterMove() {
         // Si la mateixa quantitat de cel·les tapades que de mines hem guanyat
         if (winnerCounter == totalMines) {
@@ -126,7 +134,7 @@ public class Minesweeper {
                 if (move.length() >= 3) {
                     int x = move.charAt(1)-'A'+1;
                     if (x >= 1 && x <= field.length) {
-                        int y = Integer.parseInt(move.substring(2));
+                        int y = tryParse(move.substring(2));
                         if (y >= 1 && y <= field[0].length) {
                             // Col·locam o llevam bandera
                             if (visibility[x-1][y-1] == 0) {
@@ -148,7 +156,7 @@ public class Minesweeper {
                 if (move.length() >= 2) {
                     int x = move.charAt(0)-'A'+1;
                     if (x >= 1 && x <= field.length) {
-                        int y = Integer.parseInt(move.substring(1));
+                        int y = tryParse(move.substring(1));
                         if (y >= 1 && y <= field[0].length) {
                             // Només podem destapar cel·la si está "tapada" (0) i no es bandera (2)
                             if (visibility[x-1][y-1] == 0) {
