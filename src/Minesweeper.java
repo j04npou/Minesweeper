@@ -12,6 +12,7 @@ public class Minesweeper {
     private final String skull = "\uD83D\uDC80";
     private int totalMines;
     private int winnerCounter = 0;
+    private long timeElapsed;
     private boolean firstMove = true;
 
     public void setField(int x, int y, int mines) {
@@ -88,6 +89,7 @@ public class Minesweeper {
                 }
             }
         }
+        timeElapsed = System.currentTimeMillis();
     }
 
     public boolean enterMove() {
@@ -98,7 +100,12 @@ public class Minesweeper {
 
         Scanner keys = new Scanner(System.in);
 
-        System.out.println("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
+        System.out.print("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
+        if (timeElapsed > 0) {
+            System.out.println(" ⏱" + (int) (System.currentTimeMillis() - timeElapsed) / 1000 + "s");
+        } else {
+            System.out.println();
+        }
         // (char)('A'+field.length)
         String move = keys.next();
         move = move.toUpperCase();
@@ -221,5 +228,7 @@ public class Minesweeper {
                 "|  |  |___ _ _   | | | |_|___ \n" +
                 "|_   _| . | | |  | | | | |   |\n" +
                 "  |_| |___|___|  |_____|_|_|_|");
+        System.out.println("⏱ Your time is: " + (int)(System.currentTimeMillis()-timeElapsed)/1000 + "s");
+        System.out.println("\uD83E\uDD73 \uD83C\uDF8A \uD83E\uDD84 \uD83C\uDF08 \uD83C\uDF89 \uD83E\uDD29");
     }
 }
