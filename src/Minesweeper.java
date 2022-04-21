@@ -121,7 +121,7 @@ public class Minesweeper {
 
         System.out.print("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
         if (timeElapsed > 0) {
-            System.out.println(" ⏱" + (int) (System.currentTimeMillis() - timeElapsed) / 1000 + "s");
+            System.out.println(" ⏱ " + (int) (System.currentTimeMillis() - timeElapsed) / 1000 + "s");
         } else {
             System.out.println();
         }
@@ -259,7 +259,7 @@ public class Minesweeper {
                 "|  |  |___ _ _   | | | |_|___ \n" +
                 "|_   _| . | | |  | | | | |   |\n" +
                 "  |_| |___|___|  |_____|_|_|_|");
-        System.out.println("⏱ Your time is: " + (int)(System.currentTimeMillis()-timeElapsed)/1000 + "s");
+        System.out.println("⏱  Your time is: " + (int)(System.currentTimeMillis()-timeElapsed)/1000 + "s");
         System.out.println("\uD83E\uDD73 \uD83C\uDF8A \uD83E\uDD84 \uD83C\uDF08 \uD83C\uDF89 \uD83E\uDD29");
     }
 }
