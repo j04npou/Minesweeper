@@ -52,8 +52,9 @@ public class Minesweeper {
                 }
 
             }
-            System.out.println();
+            System.out.println("|");
         }
+        System.out.println("-".repeat(field.length*3+6));
     }
 
     private void putMines() {
@@ -103,7 +104,7 @@ public class Minesweeper {
                             } else if (visibility[x-1][y-1] == 2) {
                                 visibility[x - 1][y - 1] = 0;
                             } else {
-                                System.out.println("⛔ You cannot put a flag here ⛔");
+                                System.out.println("⛔ You cannot put a flag on " + move.substring(1) + " ⛔");
                             }
                         }
                     }
@@ -136,7 +137,19 @@ public class Minesweeper {
         return true;
     }
 
-    private void uncover(int x, int y) {
+    private boolean uncover(int x, int y) {
+        if (x < 0 || x >= field.length || y < 0 || y >= field[0].length || visibility[x][y] == 1)
+            return false;
+
         visibility[x][y] = 1;
+
+        if (field[x][y] == 0) {
+            for (int x1 = x-1; x1 <= x+1; x1++) {
+                for (int y1 = y-1; y1 <= y+1; y1++) {
+                    uncover(x1,y1);
+                }
+            }
+        }
+        return true;
     }
 }
