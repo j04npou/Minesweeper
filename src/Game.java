@@ -8,6 +8,7 @@ public class Game {
         System.out.println("[1] - Easy (10x8 10)");
         System.out.println("[2] - Medium (19x14 40)");
         System.out.println("[3] - Hard (24x20 99)");
+        System.out.println("[4] - Custom");
         System.out.println("[0] - Exit Game");
         String menu = keys.next();
 
@@ -21,6 +22,9 @@ public class Game {
             case "3":
                 newGame(24, 20, 99);
                 break;
+            case "4":
+                menuCustomGame();
+                break;
             case "0":
                 return false;
             default:
@@ -28,6 +32,29 @@ public class Game {
                 break;
         }
         return true;
+    }
+
+    private static void menuCustomGame() {
+        Scanner keys = new Scanner(System.in);
+
+        System.out.println("Introduce width:");
+        String customWidth = keys.next();
+        int cWidth = Integer.parseInt(customWidth);
+
+        System.out.println("Introduce height:");
+        String customHeight = keys.next();
+        int cHeight = Integer.parseInt(customHeight);
+
+        System.out.println("How many mines you want?");
+        String customMines = keys.next();
+        int cMines = Integer.parseInt(customMines);
+
+        if (cMines < cWidth * cHeight) {
+            newGame(cWidth, cHeight, cMines);
+        } else {
+            System.out.println("⛔ To many mines for this board, try again. ⛔\n");
+            menuCustomGame();
+        }
     }
 
     private static void newGame(int x, int y, int mines) {
