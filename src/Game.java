@@ -41,19 +41,28 @@ public class Game {
         String customWidth = keys.next();
         int cWidth = Integer.parseInt(customWidth);
 
+        if (cWidth < 3 || cWidth > 26) {
+            System.out.println("⛔ The width must be between 3 and 26. ⛔");
+            return;
+        }
+
         System.out.println("Introduce height:");
         String customHeight = keys.next();
         int cHeight = Integer.parseInt(customHeight);
+
+        if (cHeight < 3 || cHeight > 99) {
+            System.out.println("⛔ The height must be between 3 and 99. ⛔");
+            return;
+        }
 
         System.out.println("How many mines you want?");
         String customMines = keys.next();
         int cMines = Integer.parseInt(customMines);
 
-        if (cMines < cWidth * cHeight) {
+        if (cMines > 0 && cMines <= (cWidth-2) * (cHeight-2)) {
             newGame(cWidth, cHeight, cMines);
         } else {
-            System.out.println("⛔ To many mines for this board, try again. ⛔\n");
-            menuCustomGame();
+            System.out.println("⛔ The mines for a board of " + cWidth + "x" + cHeight + " must be between 1 and " + ((cWidth-2) * (cHeight-2)) + ", try again. ⛔\n");
         }
     }
 

@@ -74,7 +74,7 @@ public class Minesweeper {
         System.out.println();
     }
 
-    private void putMines() {
+    private void putMines(int moveX, int moveY) {
         int xMax = field.length;
         int yMax =  field[0].length;
         setField(xMax, yMax, totalMines);
@@ -85,8 +85,8 @@ public class Minesweeper {
         while (counter < totalMines) {
             int x = random.nextInt(xMax);
             int y = random.nextInt(yMax);
-            // Si ja hi ha una mina a les coordenades actuals botam el procés y tornam a calcular
-            if (field[x][y] != -1) {
+            // Si ja hi ha una mina a les coordenades actuals o està a prop del primer moviment botam el procés y tornam a calcular
+            if ( field[x][y] != -1 && !(x >= moveX-1 && x <= moveX+1 && y >= moveY-1 && y <= moveY+1) ) {
                 field[x][y] = -1;
                 counter++;
                 // Col·loca els numeros rodetjant les mines
@@ -164,7 +164,7 @@ public class Minesweeper {
                                 if (firstMove) {
                                     while (field[x - 1][y - 1] != 0 || firstMove) {
                                         firstMove = false;
-                                        putMines();
+                                        putMines(x,y);
                                     }
                                 }
                                 // Aplicam el moviment
