@@ -1,5 +1,4 @@
 import java.util.Random;
-import java.util.Scanner;
 
 public class Minesweeper {
     private Tile[][] tiles;
@@ -116,15 +115,13 @@ public class Minesweeper {
             return false;
         }
 
-        Scanner keys = new Scanner(System.in);
-
-        System.out.print("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
+        InputOutput.print("\uD83D\uDC49Introduce coordinate (ex. 'B7') \uD83D\uDC49[.] Put/Remove flag (ex. '.C3') \uD83D\uDC49[0] Leave game");
         if (timeElapsed > 0) {
-            System.out.println(" ⏱ " + (int) (System.currentTimeMillis() - timeElapsed) / 1000 + "s");
+            InputOutput.printLN(" ⏱ " + (int) (System.currentTimeMillis() - timeElapsed) / 1000 + "s");
         } else {
-            System.out.println();
+            InputOutput.printLN();
         }
-        String move = keys.next();
+        String move = InputOutput.input();
         move = move.toUpperCase();
 
         switch (move.charAt(0)) {
@@ -145,7 +142,7 @@ public class Minesweeper {
                                     tiles[x - 1][y - 1].setFlag(false);
                                 }
                             } else {
-                                System.out.println("⛔ You cannot put a flag on " + move.substring(1) + " ⛔");
+                                InputOutput.printLN("⛔ You cannot put a flag on " + move.substring(1) + " ⛔");
                             }
                         }
                     }
@@ -206,42 +203,42 @@ public class Minesweeper {
     }
 
     private void gameOver() {
-        System.out.print("    ");
+        InputOutput.print("    ");
         for (int i = 0; i < tiles.length; i++) {
-            System.out.print("[" + (char)('A'+i) + "]");
+            InputOutput.print("[" + (char)('A'+i) + "]");
         }
-        System.out.println();
+        InputOutput.printLN();
         for (int y = 0; y < tiles[0].length; y++) {
-            System.out.printf("[%02d] ", y+1);
+            InputOutput.print(String.format("[%02d] ", y+1));
             for (int x = 0; x < tiles.length; x++) {
                 if (tiles[x][y].isFlag() && tiles[x][y].isMine()) {
                     // Bandera correcte
-                    System.out.print(flag + " ");
+                    InputOutput.print(flag + " ");
                 } else if (tiles[x][y].isFlag() && tiles[x][y].isMine() == false) {
                     // Bandera incorrecte
-                    System.out.print(fail + " ");
+                    InputOutput.print(fail + " ");
                 } else if (tiles[x][y].isVisible() == false && tiles[x][y].isMine()) {
                     // Cel·la tapada i mina
-                    System.out.print(mine + " ");
+                    InputOutput.print(mine + " ");
                 } else if (tiles[x][y].isVisible() == false) {
                     // Cel·la sense destapar
-                    System.out.print(cover + " ");
+                    InputOutput.print(cover + " ");
                 } else if (tiles[x][y].isVisible()) {
                     // Cel·la destapada
                     if (tiles[x][y].isMine()) {
-                        System.out.print(skull + " ");
+                        InputOutput.print(skull + " ");
                     } else if (tiles[x][y].getNearMines() == 0) {
-                        System.out.print("   ");
+                        InputOutput.print("   ");
                     } else {
-                        System.out.print(tiles[x][y].getNearMines() + boxNumber + "  ");
+                        InputOutput.print(tiles[x][y].getNearMines() + boxNumber + "  ");
                     }
                 }
 
             }
-            System.out.println("|");
+            InputOutput.printLN("|");
         }
-        System.out.println("-".repeat(tiles.length*3+6));
-        System.out.println("" +
+        InputOutput.printLN("-".repeat(tiles.length*3+6));
+        InputOutput.printLN("" +
                     " _____                  _____             \n" +
                     "|   __|___ _____ ___   |     |_ _ ___ ___ \n" +
                     "|  |  | .'|     | -_|  |  |  | | | -_|  _|\n" +
@@ -249,12 +246,12 @@ public class Minesweeper {
     }
 
     private void youWin() {
-        System.out.println("" +
+        InputOutput.printLN("" +
                 " __ __            _ _ _ _     \n" +
                 "|  |  |___ _ _   | | | |_|___ \n" +
                 "|_   _| . | | |  | | | | |   |\n" +
                 "  |_| |___|___|  |_____|_|_|_|");
-        System.out.println("⏱  Your time is: " + (int)(System.currentTimeMillis()-timeElapsed)/1000 + "s");
-        System.out.println("\uD83E\uDD73 \uD83C\uDF8A \uD83E\uDD84 \uD83C\uDF08 \uD83C\uDF89 \uD83E\uDD29");
+        InputOutput.printLN("⏱  Your time is: " + (int)(System.currentTimeMillis()-timeElapsed)/1000 + "s");
+        InputOutput.printLN("\uD83E\uDD73 \uD83C\uDF8A \uD83E\uDD84 \uD83C\uDF08 \uD83C\uDF89 \uD83E\uDD29");
     }
 }
