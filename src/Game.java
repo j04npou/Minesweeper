@@ -72,7 +72,7 @@ public class Game {
         Field.setField(x, y, mines);
 
         while (game) {
-            Field.printField();
+            System.out.println(Field);
             game = Field.enterMove();
         }
     }
