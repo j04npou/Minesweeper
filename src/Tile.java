@@ -6,11 +6,11 @@ public class Tile {
     private int coordinateX = 0;
     private int coordinateY = 0;
 
-    public Tile(boolean isMine, boolean isVisible, boolean isFlag, int nearMines, int coordinateX, int coordinateY) {
-        this.isMine = isMine;
-        this.isVisible = isVisible;
-        this.isFlag = isFlag;
-        this.nearMines = nearMines;
+    public Tile(int coordinateX, int coordinateY) {
+        this.isMine = false;
+        this.isVisible = false;
+        this.isFlag = false;
+        this.nearMines = 0;
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
     }
@@ -19,8 +19,16 @@ public class Tile {
         return isMine;
     }
 
+    public void setMine() {
+        isMine = true;
+    }
+
     public boolean isVisible() {
         return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 
     public boolean isFlag() {
@@ -35,11 +43,23 @@ public class Tile {
         return nearMines;
     }
 
+    public void setNearMines() {
+        this.nearMines++;
+    }
+
     public int getCoordinateX() {
         return coordinateX;
     }
 
+    public void setCoordinateX(int coordinateX) {
+        this.coordinateX = coordinateX;
+    }
+
     public int getCoordinateY() {
         return coordinateY;
+    }
+
+    public void setCoordinateY(int coordinateY) {
+        this.coordinateY = coordinateY;
     }
 }

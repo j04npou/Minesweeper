@@ -2,8 +2,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Minesweeper {
-    private int[][] field = new int[0][];
-    private int[][] visibility = new int[0][];
+    private Tile[][] tiles;
     private final String boxNumber= "\u20E3";
     private final String mine = "\uD83D\uDCA3";
     private final String flag = "\uD83D\uDEA9";
@@ -16,9 +15,13 @@ public class Minesweeper {
     private boolean firstMove = true;
 
     public void setField(int x, int y, int mines) {
-        field = new int[x][y];
-        visibility = new int[x][y];
+        tiles = new Tile[x][y];
         totalMines = mines;
+        for (int x0 = 0; x0 < x; x0++) {
+            for (int y0 = 0; y0 < y; y0++) {
+                tiles[x0][y0] = new Tile(x0,y0);
+            }
+        }
     }
 
     public String toString() {
@@ -28,40 +31,32 @@ public class Minesweeper {
 
         // Imprimim les coordenades verticals
         fieldString =fieldString.concat("    ");
-        for (int i = 0; i < field.length; i++) {
+        for (int i = 0; i < tiles.length; i++) {
             fieldString = fieldString.concat("[" + (char)('A'+i) + "]");
         }
         fieldString = fieldString.concat("\n");
 
-        for (int y = 0; y < field[0].length; y++) {
+        for (int y = 0; y < tiles[0].length; y++) {
             // Imprimim les coordenades horitzontals
             fieldString = fieldString.concat(String.format("[%02d] ", y+1));
-            for (int x = 0; x < field.length; x++) {
-                switch (visibility[x][y]) {
-                    case 2:
-                        // Bandera
-                        fieldString = fieldString.concat(flag + " ");
-                        winnerCounter++;
-                        break;
-                    case 0:
-                        // Cel·la tapada
-                        fieldString = fieldString.concat(cover + " ");
-                        winnerCounter++;
-                        break;
-                    case 1:
-                        // Cel·la destapada
-                        switch (field[x][y]) {
-                            case -1:
-                                fieldString = fieldString.concat(mine + " ");
-                                break;
-                            case 0:
-                                fieldString = fieldString.concat("   ");
-                                break;
-                            default:
-                                fieldString = fieldString.concat(field[x][y] + boxNumber + "  ");
-                                break;
-                        }
-                        break;
+            for (int x = 0; x < tiles.length; x++) {
+                if (tiles[x][y].isVisible() == false && tiles[x][y].isFlag() == false) {
+                    // Cel·la tapada i no es bandera
+                    fieldString = fieldString.concat(cover + " ");
+                    winnerCounter++;
+                } else if (tiles[x][y].isFlag()) {
+                    // Bandera
+                    fieldString = fieldString.concat(flag + " ");
+                    winnerCounter++;
+               } else if (tiles[x][y].isVisible()) {
+                    // Cel·la destapada
+                    if (tiles[x][y].isMine()) {
+                        fieldString = fieldString.concat(mine + " ");
+                    } else if (tiles[x][y].getNearMines() == 0) {
+                        fieldString = fieldString.concat("   ");
+                    } else {
+                        fieldString = fieldString.concat(tiles[x][y].getNearMines() + boxNumber + "  ");
+                    }
                 }
 
             }
@@ -70,7 +65,7 @@ public class Minesweeper {
         }
         // Imprimim les coordenades verticals
         fieldString = fieldString.concat("    ");
-        for (int i = 0; i < field.length; i++) {
+        for (int i = 0; i < tiles.length; i++) {
             fieldString = fieldString.concat("[" + (char)('A'+i) + "]");
         }
         fieldString = fieldString.concat("\n");
@@ -78,10 +73,9 @@ public class Minesweeper {
         return fieldString;
     }
 
-    private void putMines(int moveX, int moveY) {
-        int xMax = field.length;
-        int yMax =  field[0].length;
-        setField(xMax, yMax, totalMines);
+    private void putMines(int firstMoveX, int firstMoveY) {
+        int xMax = tiles.length;
+        int yMax =  tiles[0].length;
 
         Random random = new Random();
 
@@ -90,14 +84,15 @@ public class Minesweeper {
             int x = random.nextInt(xMax);
             int y = random.nextInt(yMax);
             // Si ja hi ha una mina a les coordenades actuals o està a prop del primer moviment botam el procés y tornam a calcular
-            if ( field[x][y] != -1 && !(x >= moveX-1 && x <= moveX+1 && y >= moveY-1 && y <= moveY+1) ) {
-                field[x][y] = -1;
+            if ( tiles[x][y].isMine() == false && !(x >= firstMoveX-1 && x <= firstMoveX+1 && y >= firstMoveY-1 && y <= firstMoveY+1) ) {
+                tiles[x][y].setMine();
                 counter++;
                 // Col·loca els numeros rodetjant les mines
                 for (int x1 = x-1; x1 <= x+1; x1++) {
                     for (int y1 = y-1; y1 <= y+1; y1++) {
-                        if (x1 >= 0 && x1 < field.length && y1 >= 0 && y1 < field[0].length && field[x1][y1] != -1) {
-                            field[x1][y1] ++;
+                        if (x1 >= 0 && x1 < tiles.length && y1 >= 0 && y1 < tiles[0].length && !tiles[x1][y1].isMine()) {
+                            // Incrementam les mines properes a aquesta cel·la
+                            tiles[x1][y1].setNearMines();
                         }
                     }
                 }
@@ -134,17 +129,21 @@ public class Minesweeper {
 
         switch (move.charAt(0)) {
             case '.':
+                // Banderes
+
                 // Estreim les coordenades per col·locar o llevar bandera
                 if (move.length() >= 3) {
                     int x = move.charAt(1)-'A'+1;
-                    if (x >= 1 && x <= field.length) {
+                    if (x >= 1 && x <= tiles.length) {
                         int y = tryParse(move.substring(2));
-                        if (y >= 1 && y <= field[0].length) {
+                        if (y >= 1 && y <= tiles[0].length) {
                             // Col·locam o llevam bandera
-                            if (visibility[x-1][y-1] == 0) {
-                                visibility[x - 1][y - 1] = 2;
-                            } else if (visibility[x-1][y-1] == 2) {
-                                visibility[x - 1][y - 1] = 0;
+                            if (tiles[x-1][y-1].isVisible() == false) {
+                                if (tiles[x - 1][y - 1].isFlag() == false) {
+                                    tiles[x - 1][y - 1].setFlag(true);
+                                } else {
+                                    tiles[x - 1][y - 1].setFlag(false);
+                                }
                             } else {
                                 System.out.println("⛔ You cannot put a flag on " + move.substring(1) + " ⛔");
                             }
@@ -159,17 +158,15 @@ public class Minesweeper {
                 // Estreim les coordenades xy de l'input i aplicam el moviment
                 if (move.length() >= 2) {
                     int x = move.charAt(0)-'A'+1;
-                    if (x >= 1 && x <= field.length) {
+                    if (x >= 1 && x <= tiles.length) {
                         int y = tryParse(move.substring(1));
-                        if (y >= 1 && y <= field[0].length) {
-                            // Només podem destapar cel·la si está "tapada" (0) i no es bandera (2)
-                            if (visibility[x-1][y-1] == 0) {
+                        if (y >= 1 && y <= tiles[0].length) {
+                            // Només podem destapar cel·la si está "tapada" i no es bandera
+                            if (tiles[x-1][y-1].isVisible() == false && tiles[x-1][y-1].isFlag() == false) {
                                 // Cridam putMine si es el primer pic que destapam una cel·la
                                 if (firstMove) {
-                                    while (field[x - 1][y - 1] != 0 || firstMove) {
-                                        firstMove = false;
-                                        putMines(x,y);
-                                    }
+                                    firstMove = false;
+                                    putMines(x-1,y-1);
                                 }
                                 // Aplicam el moviment
                                 if (uncover(x - 1, y - 1) == false) {
@@ -188,68 +185,62 @@ public class Minesweeper {
 
     private boolean uncover(int x, int y) {
         // Comprovam que les coordenades estiguin dins el tauler
-        if (x < 0 || x >= field.length || y < 0 || y >= field[0].length || visibility[x][y] == 1)
+        if (x < 0 || x >= tiles.length || y < 0 || y >= tiles[0].length || tiles[x][y].isVisible())
             return true;
 
         // Destapam la cel·la
-        visibility[x][y] = 1;
+        tiles[x][y].setVisible(true);
 
-        switch (field[x][y]) {
-            case 0:
-                // Si la cel·la està buida (0) destapam les que l'envolten recursivament
-                for (int x1 = x - 1; x1 <= x + 1; x1++) {
-                    for (int y1 = y - 1; y1 <= y + 1; y1++) {
-                        uncover(x1, y1);
-                    }
+        if (tiles[x][y].isMine() == false &&  tiles[x][y].getNearMines() == 0) {
+            // Si la cel·la està buida, destapam les que l'envolten recursivament
+            for (int x1 = x - 1; x1 <= x + 1; x1++) {
+                for (int y1 = y - 1; y1 <= y + 1; y1++) {
+                    uncover(x1, y1);
                 }
-                break;
-            case -1:
-                // Si la cel·la conté una mina desencadenam el game over
-                return false;
+            }
+        } else if (tiles[x][y].isMine() == true) {
+            // Si la cel·la conté una mina desencadenam el game over
+            return false;
         }
         return true;
     }
 
     private void gameOver() {
         System.out.print("    ");
-        for (int i = 0; i < field.length; i++) {
+        for (int i = 0; i < tiles.length; i++) {
             System.out.print("[" + (char)('A'+i) + "]");
         }
         System.out.println();
-        for (int y = 0; y < field[0].length; y++) {
+        for (int y = 0; y < tiles[0].length; y++) {
             System.out.printf("[%02d] ", y+1);
-            for (int x = 0; x < field.length; x++) {
-                if (visibility[x][y] == 2 && field[x][y] == -1) {
+            for (int x = 0; x < tiles.length; x++) {
+                if (tiles[x][y].isFlag() && tiles[x][y].isMine()) {
                     // Bandera correcte
                     System.out.print(flag + " ");
-                } else if (visibility[x][y] == 2 && field[x][y] != -1) {
+                } else if (tiles[x][y].isFlag() && tiles[x][y].isMine() == false) {
                     // Bandera incorrecte
                     System.out.print(fail + " ");
-                } else if (visibility[x][y] == 0 && field[x][y] == -1) {
+                } else if (tiles[x][y].isVisible() == false && tiles[x][y].isMine()) {
                     // Cel·la tapada i mina
                     System.out.print(mine + " ");
-                } else if (visibility[x][y] == 0) {
+                } else if (tiles[x][y].isVisible() == false) {
                     // Cel·la sense destapar
                     System.out.print(cover + " ");
-                } else if (visibility[x][y] == 1) {
+                } else if (tiles[x][y].isVisible()) {
                     // Cel·la destapada
-                    switch (field[x][y]) {
-                        case -1:
-                            System.out.print(skull + " ");
-                            break;
-                        case 0:
-                            System.out.print("   ");
-                            break;
-                        default:
-                            System.out.print(field[x][y] + boxNumber + "  ");
-                            break;
+                    if (tiles[x][y].isMine()) {
+                        System.out.print(skull + " ");
+                    } else if (tiles[x][y].getNearMines() == 0) {
+                        System.out.print("   ");
+                    } else {
+                        System.out.print(tiles[x][y].getNearMines() + boxNumber + "  ");
                     }
                 }
 
             }
             System.out.println("|");
         }
-        System.out.println("-".repeat(field.length*3+6));
+        System.out.println("-".repeat(tiles.length*3+6));
         System.out.println("" +
                     " _____                  _____             \n" +
                     "|   __|___ _____ ___   |     |_ _ ___ ___ \n" +
