@@ -21,57 +21,61 @@ public class Minesweeper {
         totalMines = mines;
     }
 
-    public void printField() {
+    public String toString() {
+        String fieldString = "";
+
         winnerCounter = 0;
 
-        // Imprimim les coordenades horitzontals
-        System.out.print("    ");
+        // Imprimim les coordenades verticals
+        fieldString =fieldString.concat("    ");
         for (int i = 0; i < field.length; i++) {
-            System.out.print("[" + (char)('A'+i) + "]");
+            fieldString = fieldString.concat("[" + (char)('A'+i) + "]");
         }
-        System.out.println();
+        fieldString = fieldString.concat("\n");
 
         for (int y = 0; y < field[0].length; y++) {
-            // Imprimim les coordenades verticals
-            System.out.printf("[%02d] ", y+1);
+            // Imprimim les coordenades horitzontals
+            fieldString = fieldString.concat(String.format("[%02d] ", y+1));
             for (int x = 0; x < field.length; x++) {
                 switch (visibility[x][y]) {
                     case 2:
                         // Bandera
-                        System.out.print(flag + " ");
+                        fieldString = fieldString.concat(flag + " ");
                         winnerCounter++;
                         break;
                     case 0:
                         // Cel·la tapada
-                        System.out.print(cover + " ");
+                        fieldString = fieldString.concat(cover + " ");
                         winnerCounter++;
                         break;
                     case 1:
                         // Cel·la destapada
                         switch (field[x][y]) {
                             case -1:
-                                System.out.print(mine + " ");
+                                fieldString = fieldString.concat(mine + " ");
                                 break;
                             case 0:
-                                System.out.print("   ");
+                                fieldString = fieldString.concat("   ");
                                 break;
                             default:
-                                System.out.print(field[x][y] + boxNumber + "  ");
+                                fieldString = fieldString.concat(field[x][y] + boxNumber + "  ");
                                 break;
                         }
                         break;
                 }
 
             }
-            // Imprimim les coordenades verticals
-            System.out.printf("[%02d]%n", y+1);
+            // Imprimim les coordenades horitzontals
+            fieldString = fieldString.concat(String.format("[%02d] ", y+1) + "\n");
         }
-        // Imprimim les coordenades horitzontals
-        System.out.print("    ");
+        // Imprimim les coordenades verticals
+        fieldString = fieldString.concat("    ");
         for (int i = 0; i < field.length; i++) {
-            System.out.print("[" + (char)('A'+i) + "]");
+            fieldString = fieldString.concat("[" + (char)('A'+i) + "]");
         }
-        System.out.println();
+        fieldString = fieldString.concat("\n");
+
+        return fieldString;
     }
 
     private void putMines(int moveX, int moveY) {
