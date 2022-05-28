@@ -1,16 +1,13 @@
-import java.util.Scanner;
-
 public class Game {
 
     private static boolean menu() {
-        Scanner keys = new Scanner(System.in);
 
-        System.out.println("[1] - Easy (10x8 10)");
-        System.out.println("[2] - Medium (19x14 40)");
-        System.out.println("[3] - Hard (24x20 99)");
-        System.out.println("[4] - Custom");
-        System.out.println("[0] - Exit Game");
-        String menu = keys.next();
+        InputOutput.printLN("[1] - Easy (10x8 10)");
+        InputOutput.printLN("[2] - Medium (19x14 40)");
+        InputOutput.printLN("[3] - Hard (24x20 99)");
+        InputOutput.printLN("[4] - Custom");
+        InputOutput.printLN("[0] - Exit Game");
+        String menu = InputOutput.input();
 
         switch (menu) {
             case "1":
@@ -28,41 +25,40 @@ public class Game {
             case "0":
                 return false;
             default:
-                System.out.println("⛔ Select one of the indicated options, please. ⛔");
+                InputOutput.printLN("⛔ Select one of the indicated options, please. ⛔");
                 break;
         }
         return true;
     }
 
     private static void menuCustomGame() {
-        Scanner keys = new Scanner(System.in);
 
-        System.out.println("Introduce width:");
-        String customWidth = keys.next();
+        InputOutput.printLN("Introduce width:");
+        String customWidth = InputOutput.input();
         int cWidth = Integer.parseInt(customWidth);
 
         if (cWidth < 3 || cWidth > 26) {
-            System.out.println("⛔ The width must be between 3 and 26. ⛔");
+            InputOutput.printLN("⛔ The width must be between 3 and 26. ⛔");
             return;
         }
 
-        System.out.println("Introduce height:");
-        String customHeight = keys.next();
+        InputOutput.printLN("Introduce height:");
+        String customHeight = InputOutput.input();
         int cHeight = Integer.parseInt(customHeight);
 
         if (cHeight < 3 || cHeight > 99) {
-            System.out.println("⛔ The height must be between 3 and 99. ⛔");
+            InputOutput.printLN("⛔ The height must be between 3 and 99. ⛔");
             return;
         }
 
-        System.out.println("How many mines you want?");
-        String customMines = keys.next();
+        InputOutput.printLN("How many mines you want?");
+        String customMines = InputOutput.input();
         int cMines = Integer.parseInt(customMines);
 
         if (cMines > 0 && cMines <= (cWidth-2) * (cHeight-2)) {
             newGame(cWidth, cHeight, cMines);
         } else {
-            System.out.println("⛔ The mines for a board of " + cWidth + "x" + cHeight + " must be between 1 and " + ((cWidth-2) * (cHeight-2)) + ", try again. ⛔\n");
+            InputOutput.printLN("⛔ The mines for a board of " + cWidth + "x" + cHeight + " must be between 1 and " + ((cWidth-2) * (cHeight-2)) + ", try again. ⛔\n");
         }
     }
 
@@ -72,14 +68,15 @@ public class Game {
         Field.setField(x, y, mines);
 
         while (game) {
-            System.out.println(Field);
+            InputOutput.printLN(Field.toString());
             game = Field.enterMove();
         }
     }
 
     public static void main(String[] args) {
         while (menu()) {
-            System.out.println();
+            // Linea en blanc per separar
+            InputOutput.printLN();
         }
     }
 }
