@@ -1,10 +1,10 @@
 public class Tile {
-    private boolean isMine = false;
-    private boolean isVisible = false;
-    private boolean isFlag = false;
-    private int nearMines = 0;
-    private int coordinateX = 0;
-    private int coordinateY = 0;
+    private boolean isMine;
+    private boolean isVisible;
+    private boolean isFlag;
+    private int nearMines;
+    private int coordinateX;
+    private int coordinateY;
 
     public Tile(int coordinateX, int coordinateY) {
         this.isMine = false;
