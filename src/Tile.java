@@ -43,7 +43,7 @@ public class Tile {
         return nearMines;
     }
 
-    public void setNearMines() {
+    public void incNearMines() {
         this.nearMines++;
     }
 

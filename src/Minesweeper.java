@@ -91,7 +91,7 @@ public class Minesweeper {
                     for (int y1 = y-1; y1 <= y+1; y1++) {
                         if (x1 >= 0 && x1 < tiles.length && y1 >= 0 && y1 < tiles[0].length && !tiles[x1][y1].isMine()) {
                             // Incrementam les mines properes a aquesta cel·la
-                            tiles[x1][y1].setNearMines();
+                            tiles[x1][y1].incNearMines();
                         }
                     }
                 }
