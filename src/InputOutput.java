@@ -18,4 +18,12 @@ public class InputOutput {
         Scanner keys = new Scanner(System.in);
         return keys.next();
     }
+
+    public static Integer tryParse(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 }
