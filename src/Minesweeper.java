@@ -145,9 +145,8 @@ public class Minesweeper {
             InputOutput.printLN();
         }
         String move = InputOutput.input();
-        move = move.toUpperCase();
 
-        InputOutput parseText = new InputOutput(move, tiles.length, tiles[0].length);
+        ParseText parseText = new ParseText(move, tiles.length, tiles[0].length);
 
         if (parseText.isExit()) {
             return false;
@@ -157,29 +156,40 @@ public class Minesweeper {
             InputOutput.printLN(parseText.getErrorMessage());
         } else if (parseText.isFlag()) {
             // Col·locam o llevam bandera
-            if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible()) {
-                if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
-                    tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(true);
-                } else {
-                    tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(false);
-                }
-            }
+            plantFlag(parseText);
         } else {
-            // Només podem destapar cel·la si está "tapada" i no es bandera
-            if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible() && !tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
-                // Cridam putMine si es el primer pic que destapam una cel·la
-                if (firstMove) {
-                    firstMove = false;
-                    putMines(parseText.getX() - 1, parseText.getY() - 1);
-                }
-                // Aplicam el moviment
-                if (!Tile.uncover(parseText.getX() - 1, parseText.getY() - 1, tiles)) {
-                    // Hem destapat una bomba i hem perdut
-                    endGame = true;
-                    InputOutput.printLN(toString());
-                    Tile.gameOver();
-                    return false;
-                }
+            // Destapam cel·la
+            return exposeTile(parseText);
+        }
+        return true;
+    }
+
+    private void plantFlag(ParseText parseText) {
+        // Col·locam o llevam bandera
+        if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible()) {
+            if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
+                tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(true);
+            } else {
+                tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(false);
+            }
+        }
+    }
+
+    private boolean exposeTile(ParseText parseText) {
+        // Només podem destapar cel·la si está "tapada" i no es bandera
+        if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible() && !tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
+            // Cridam putMine si es el primer pic que destapam una cel·la
+            if (firstMove) {
+                firstMove = false;
+                putMines(parseText.getX() - 1, parseText.getY() - 1);
+            }
+            // Aplicam el moviment
+            if (!Tile.uncover(parseText.getX() - 1, parseText.getY() - 1, tiles)) {
+                // Hem destapat una bomba i hem perdut
+                endGame = true;
+                InputOutput.printLN(toString());
+                Tile.gameOver();
+                return false;
             }
         }
         return true;
