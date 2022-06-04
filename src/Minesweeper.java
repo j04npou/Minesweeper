@@ -2,17 +2,24 @@ import java.util.Random;
 
 public class Minesweeper {
     private Tile[][] tiles;
-    private final String boxNumber= "\u20E3";
-    private final String mine = "\uD83D\uDCA3";
-    private final String flag = "\uD83D\uDEA9";
-    private final String cover = "\uD83D\uDFE9";
-    private final String fail = "\uD83C\uDFF4";
-    private final String skull = "\uD83D\uDC80";
+    private final String BOXNUMBER = "\u20E3";
+    private final String MINE = "\uD83D\uDCA3";
+    private final String FLAG = "\uD83D\uDEA9";
+    private final String COVER = "\uD83D\uDFE9";
+    private final String FAIL = "\uD83C\uDFF4";
+    private final String SKULL = "\uD83D\uDC80";
     private int totalMines;
-    private int winnerCounter = 0;
+    private int winnerCounter;
     private long timeElapsed;
-    private boolean firstMove = true;
-    private boolean endGame = false;
+    private boolean firstMove;
+    private boolean endGame;
+
+    public Minesweeper(int x, int y, int totalMines) {
+        this.winnerCounter = 0;
+        this.firstMove = true;
+        this.endGame = false;
+        setField(x,y,totalMines);
+    }
 
     public void setField(int x, int y, int mines) {
         tiles = new Tile[x][y];
@@ -44,30 +51,30 @@ public class Minesweeper {
                     if (tiles[x][y].isMine()) {
                         if (tiles[x][y].isVisible()) {
                             // si es mina i está destapada pintam una calavera
-                            fieldString = fieldString.concat(skull + " ");
+                            fieldString = fieldString.concat(SKULL + " ");
                         } else if (tiles[x][y].isFlag()) {
                             // si es mina i te una bandera pintam una bandera correcte
-                            fieldString = fieldString.concat(flag + " ");
+                            fieldString = fieldString.concat(FLAG + " ");
                         } else {
                             // si es mina i está tapada i no te bandera pintam una mina
-                            fieldString = fieldString.concat(mine + " ");
+                            fieldString = fieldString.concat(MINE + " ");
                         }
                     } else if (tiles[x][y].isFlag()) {
                         // si no es mina i es bandera pintam una bandera incorrecte
-                        fieldString = fieldString.concat(fail + " ");
+                        fieldString = fieldString.concat(FAIL + " ");
                     } else if (!tiles[x][y].isVisible()){
                         // Cel·la tapada i no es bandera
-                        fieldString = fieldString.concat(cover + " ");
+                        fieldString = fieldString.concat(COVER + " ");
                     }
                 } else {
                     // si no es final de partida
                     if (tiles[x][y].isFlag()) {
                         // Cel·la tapada i es bandera
-                        fieldString = fieldString.concat(flag + " ");
+                        fieldString = fieldString.concat(FLAG + " ");
                         winnerCounter++;
                     } else if (!tiles[x][y].isVisible()){
                         // Cel·la tapada i no es bandera
-                        fieldString = fieldString.concat(cover + " ");
+                        fieldString = fieldString.concat(COVER + " ");
                         winnerCounter++;
                     }
                 }
@@ -76,7 +83,7 @@ public class Minesweeper {
                     if (tiles[x][y].getNearMines() == 0) {
                         fieldString = fieldString.concat("   ");
                     } else {
-                        fieldString = fieldString.concat(tiles[x][y].getNearMines() + boxNumber + "  ");
+                        fieldString = fieldString.concat(tiles[x][y].getNearMines() + BOXNUMBER + "  ");
                     }
                 }
             }
@@ -138,62 +145,52 @@ public class Minesweeper {
             InputOutput.printLN();
         }
         String move = InputOutput.input();
-        move = move.toUpperCase();
 
-        switch (move.charAt(0)) {
-            case '.':
-                // Banderes
+        ParseText parseText = new ParseText(move, tiles.length, tiles[0].length);
 
-                // Estreim les coordenades per col·locar o llevar bandera
-                if (move.length() >= 3) {
-                    int x = move.charAt(1)-'A'+1;
-                    if (x >= 1 && x <= tiles.length) {
-                        int y = InputOutput.tryParse(move.substring(2));
-                        if (y >= 1 && y <= tiles[0].length) {
-                            // Col·locam o llevam bandera
-                            if (!tiles[x - 1][y - 1].isVisible()) {
-                                if (!tiles[x - 1][y - 1].isFlag()) {
-                                    tiles[x - 1][y - 1].setFlag(true);
-                                } else {
-                                    tiles[x - 1][y - 1].setFlag(false);
-                                }
-                            } else {
-                                InputOutput.printLN("⛔ You cannot put a flag on " + move.substring(1) + " ⛔");
-                            }
-                        }
-                    }
-                }
-                break;
-            case '0':
-                // Abandonam la partida
+        if (parseText.isExit()) {
+            return false;
+        }
+
+        if (parseText.isError()) {
+            InputOutput.printLN(parseText.getErrorMessage());
+        } else if (parseText.isFlag()) {
+            // Col·locam o llevam bandera
+            plantFlag(parseText);
+        } else {
+            // Destapam cel·la
+            return exposeTile(parseText);
+        }
+        return true;
+    }
+
+    private void plantFlag(ParseText parseText) {
+        // Col·locam o llevam bandera
+        if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible()) {
+            if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
+                tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(true);
+            } else {
+                tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(false);
+            }
+        }
+    }
+
+    private boolean exposeTile(ParseText parseText) {
+        // Només podem destapar cel·la si está "tapada" i no es bandera
+        if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible() && !tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
+            // Cridam putMine si es el primer pic que destapam una cel·la
+            if (firstMove) {
+                firstMove = false;
+                putMines(parseText.getX() - 1, parseText.getY() - 1);
+            }
+            // Aplicam el moviment
+            if (!Tile.uncover(parseText.getX() - 1, parseText.getY() - 1, tiles)) {
+                // Hem destapat una bomba i hem perdut
+                endGame = true;
+                InputOutput.printLN(toString());
+                Tile.gameOver();
                 return false;
-            default:
-                // Estreim les coordenades xy de l'input i aplicam el moviment
-                if (move.length() >= 2) {
-                    int x = move.charAt(0)-'A'+1;
-                    if (x >= 1 && x <= tiles.length) {
-                        int y = InputOutput.tryParse(move.substring(1));
-                        if (y >= 1 && y <= tiles[0].length) {
-                            // Només podem destapar cel·la si está "tapada" i no es bandera
-                            if (!tiles[x - 1][y - 1].isVisible() && !tiles[x - 1][y - 1].isFlag()) {
-                                // Cridam putMine si es el primer pic que destapam una cel·la
-                                if (firstMove) {
-                                    firstMove = false;
-                                    putMines(x-1,y-1);
-                                }
-                                // Aplicam el moviment
-                                if (!Tile.uncover(x - 1, y - 1, tiles)) {
-                                    // Hem destapat una bomba i hem perdut
-                                    endGame = true;
-                                    InputOutput.printLN(toString());
-                                    Tile.gameOver();
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
+            }
         }
         return true;
     }

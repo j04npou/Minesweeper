@@ -63,20 +63,20 @@ public class Game {
     }
 
     private static void newGame(int x, int y, int mines) {
-        Minesweeper Field = new Minesweeper();
-        boolean game = true;
-        Field.setField(x, y, mines);
+        Minesweeper Field = new Minesweeper(x, y, mines);
 
-        while (game) {
+        boolean exit = true;
+        do {
             InputOutput.printLN(Field.toString());
-            game = Field.enterMove();
-        }
+            exit = Field.enterMove();
+        } while (exit);
     }
 
     public static void main(String[] args) {
-        while (menu()) {
-            // Linea en blanc per separar
+        boolean exit = false;
+        do {
+            exit = menu();
             InputOutput.printLN();
-        }
+        } while (exit);
     }
 }
