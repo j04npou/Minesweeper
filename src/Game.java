@@ -63,8 +63,7 @@ public class Game {
     }
 
     private static void newGame(int x, int y, int mines) {
-        Minesweeper Field = new Minesweeper();
-        Field.setField(x, y, mines);
+        Minesweeper Field = new Minesweeper(x, y, mines);
 
         boolean exit = true;
         do {

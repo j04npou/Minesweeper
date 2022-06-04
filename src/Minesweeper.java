@@ -9,10 +9,17 @@ public class Minesweeper {
     private final String fail = "\uD83C\uDFF4";
     private final String skull = "\uD83D\uDC80";
     private int totalMines;
-    private int winnerCounter = 0;
+    private int winnerCounter;
     private long timeElapsed;
-    private boolean firstMove = true;
-    private boolean endGame = false;
+    private boolean firstMove;
+    private boolean endGame;
+
+    public Minesweeper(int x, int y, int totalMines) {
+        this.winnerCounter = 0;
+        this.firstMove = true;
+        this.endGame = false;
+        setField(x,y,totalMines);
+    }
 
     public void setField(int x, int y, int mines) {
         tiles = new Tile[x][y];
