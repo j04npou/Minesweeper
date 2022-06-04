@@ -147,60 +147,40 @@ public class Minesweeper {
         String move = InputOutput.input();
         move = move.toUpperCase();
 
-        switch (move.charAt(0)) {
-            case '.':
-                // Banderes
+        InputOutput parseText = new InputOutput(move, tiles.length, tiles[0].length);
 
-                // Estreim les coordenades per col·locar o llevar bandera
-                if (move.length() >= 3) {
-                    int x = move.charAt(1)-'A'+1;
-                    if (x >= 1 && x <= tiles.length) {
-                        int y = InputOutput.tryParse(move.substring(2));
-                        if (y >= 1 && y <= tiles[0].length) {
-                            // Col·locam o llevam bandera
-                            if (!tiles[x - 1][y - 1].isVisible()) {
-                                if (!tiles[x - 1][y - 1].isFlag()) {
-                                    tiles[x - 1][y - 1].setFlag(true);
-                                } else {
-                                    tiles[x - 1][y - 1].setFlag(false);
-                                }
-                            } else {
-                                InputOutput.printLN("⛔ You cannot put a flag on " + move.substring(1) + " ⛔");
-                            }
-                        }
-                    }
+        if (parseText.isExit()) {
+            return false;
+        }
+
+        if (parseText.isError()) {
+            InputOutput.printLN(parseText.getErrorMessage());
+        } else if (parseText.isFlag()) {
+            // Col·locam o llevam bandera
+            if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible()) {
+                if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
+                    tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(true);
+                } else {
+                    tiles[parseText.getX() - 1][parseText.getY() - 1].setFlag(false);
                 }
-                break;
-            case '0':
-                // Abandonam la partida
-                return false;
-            default:
-                // Estreim les coordenades xy de l'input i aplicam el moviment
-                if (move.length() >= 2) {
-                    int x = move.charAt(0)-'A'+1;
-                    if (x >= 1 && x <= tiles.length) {
-                        int y = InputOutput.tryParse(move.substring(1));
-                        if (y >= 1 && y <= tiles[0].length) {
-                            // Només podem destapar cel·la si está "tapada" i no es bandera
-                            if (!tiles[x - 1][y - 1].isVisible() && !tiles[x - 1][y - 1].isFlag()) {
-                                // Cridam putMine si es el primer pic que destapam una cel·la
-                                if (firstMove) {
-                                    firstMove = false;
-                                    putMines(x-1,y-1);
-                                }
-                                // Aplicam el moviment
-                                if (!Tile.uncover(x - 1, y - 1, tiles)) {
-                                    // Hem destapat una bomba i hem perdut
-                                    endGame = true;
-                                    InputOutput.printLN(toString());
-                                    Tile.gameOver();
-                                    return false;
-                                }
-                            }
-                        }
-                    }
+            }
+        } else {
+            // Només podem destapar cel·la si está "tapada" i no es bandera
+            if (!tiles[parseText.getX() - 1][parseText.getY() - 1].isVisible() && !tiles[parseText.getX() - 1][parseText.getY() - 1].isFlag()) {
+                // Cridam putMine si es el primer pic que destapam una cel·la
+                if (firstMove) {
+                    firstMove = false;
+                    putMines(parseText.getX() - 1, parseText.getY() - 1);
                 }
-                break;
+                // Aplicam el moviment
+                if (!Tile.uncover(parseText.getX() - 1, parseText.getY() - 1, tiles)) {
+                    // Hem destapat una bomba i hem perdut
+                    endGame = true;
+                    InputOutput.printLN(toString());
+                    Tile.gameOver();
+                    return false;
+                }
+            }
         }
         return true;
     }
