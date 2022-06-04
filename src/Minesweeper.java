@@ -2,12 +2,12 @@ import java.util.Random;
 
 public class Minesweeper {
     private Tile[][] tiles;
-    private final String boxNumber= "\u20E3";
-    private final String mine = "\uD83D\uDCA3";
-    private final String flag = "\uD83D\uDEA9";
-    private final String cover = "\uD83D\uDFE9";
-    private final String fail = "\uD83C\uDFF4";
-    private final String skull = "\uD83D\uDC80";
+    private final String BOXNUMBER = "\u20E3";
+    private final String MINE = "\uD83D\uDCA3";
+    private final String FLAG = "\uD83D\uDEA9";
+    private final String COVER = "\uD83D\uDFE9";
+    private final String FAIL = "\uD83C\uDFF4";
+    private final String SKULL = "\uD83D\uDC80";
     private int totalMines;
     private int winnerCounter;
     private long timeElapsed;
@@ -51,30 +51,30 @@ public class Minesweeper {
                     if (tiles[x][y].isMine()) {
                         if (tiles[x][y].isVisible()) {
                             // si es mina i está destapada pintam una calavera
-                            fieldString = fieldString.concat(skull + " ");
+                            fieldString = fieldString.concat(SKULL + " ");
                         } else if (tiles[x][y].isFlag()) {
                             // si es mina i te una bandera pintam una bandera correcte
-                            fieldString = fieldString.concat(flag + " ");
+                            fieldString = fieldString.concat(FLAG + " ");
                         } else {
                             // si es mina i está tapada i no te bandera pintam una mina
-                            fieldString = fieldString.concat(mine + " ");
+                            fieldString = fieldString.concat(MINE + " ");
                         }
                     } else if (tiles[x][y].isFlag()) {
                         // si no es mina i es bandera pintam una bandera incorrecte
-                        fieldString = fieldString.concat(fail + " ");
+                        fieldString = fieldString.concat(FAIL + " ");
                     } else if (!tiles[x][y].isVisible()){
                         // Cel·la tapada i no es bandera
-                        fieldString = fieldString.concat(cover + " ");
+                        fieldString = fieldString.concat(COVER + " ");
                     }
                 } else {
                     // si no es final de partida
                     if (tiles[x][y].isFlag()) {
                         // Cel·la tapada i es bandera
-                        fieldString = fieldString.concat(flag + " ");
+                        fieldString = fieldString.concat(FLAG + " ");
                         winnerCounter++;
                     } else if (!tiles[x][y].isVisible()){
                         // Cel·la tapada i no es bandera
-                        fieldString = fieldString.concat(cover + " ");
+                        fieldString = fieldString.concat(COVER + " ");
                         winnerCounter++;
                     }
                 }
@@ -83,7 +83,7 @@ public class Minesweeper {
                     if (tiles[x][y].getNearMines() == 0) {
                         fieldString = fieldString.concat("   ");
                     } else {
-                        fieldString = fieldString.concat(tiles[x][y].getNearMines() + boxNumber + "  ");
+                        fieldString = fieldString.concat(tiles[x][y].getNearMines() + BOXNUMBER + "  ");
                     }
                 }
             }
