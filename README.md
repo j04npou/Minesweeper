@@ -1,5 +1,17 @@
 # Buscaminas
 Esta es una implementación del juego de Buscaminas en Java. El juego se juega en la terminal, y el objetivo es descubrir todas las celdas del tablero sin tocar ninguna mina.
+```
+    [A][B][C][D][E][F][G][H][I][J]
+[01]          1⃣  🟩 🟩 💣 🟩 🟩 1⃣  [01]
+[02]          1⃣  💣 3⃣  💣 🟩 🟩 💣 [02]
+[03]          1⃣  1⃣  2⃣  1⃣  2⃣  3⃣  💀 [03]
+[04]                      1⃣  💣 🟩 [04]
+[05] 1⃣  1⃣  1⃣           1⃣  2⃣  🟩 💣 [05]
+[06] 🟩 💣 2⃣  1⃣  1⃣     1⃣  🚩 2⃣  1⃣  [06]
+[07] 🟩 🟩 🟩 🚩 1⃣     1⃣  1⃣  1⃣     [07]
+[08] 🟩 🏴 🟩 🟩 1⃣                 [08]
+    [A][B][C][D][E][F][G][H][I][J]
+```
 
 ## Cómo Jugar
 - Si quieres jugar sin tener que compilar el código, puedes descargar el archivo JAR del juego de la última release desde el siguiente enlace: [Descargar Buscaminas JAR](https://github.com/j04npou/Minesweeper/releases/tag/1.1)
